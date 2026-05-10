@@ -1303,7 +1303,7 @@ END:VCARD`;
     const payload = {
       name,
       email,
-      phone: phone || '—',
+      phone: formatPhoneForSheet(phone),
       visitor_type: selectedType,
       referrer: document.referrer || window.location.href
     };
@@ -1338,6 +1338,28 @@ END:VCARD`;
 
   // Store original placeholders
   document.querySelectorAll('.vc-input').forEach(el => el.dataset.ph = el.placeholder);
+
+  // ── PHONE NUMBER AUTO-FORMATTER ──
+  const phoneInput = document.getElementById('vc-phone');
+  phoneInput.addEventListener('input', function(e) {
+    let digits = e.target.value.replace(/\D/g, '').substring(0, 10);
+    let fmt = '';
+    if (digits.length === 0)      fmt = '';
+    else if (digits.length <= 3)  fmt = '(' + digits;
+    else if (digits.length <= 6)  fmt = '(' + digits.substring(0,3) + ') ' + digits.substring(3);
+    else fmt = '+1 (' + digits.substring(0,3) + ') ' + digits.substring(3,6) + '-' + digits.substring(6);
+    e.target.value = fmt;
+  });
+
+  function formatPhoneForSheet(raw) {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length === 10) {
+      return '+1 (' + digits.substring(0,3) + ') ' + digits.substring(3,6) + '-' + digits.substring(6);
+    } else if (digits.length === 11 && digits[0] === '1') {
+      return '+1 (' + digits.substring(1,4) + ') ' + digits.substring(4,7) + '-' + digits.substring(7);
+    }
+    return raw || '—';
+  }
 </script>
 </body>
 </html>
