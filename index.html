@@ -73,8 +73,8 @@
   }
 
   .photo-frame {
-    width: 140px;
-    height: 140px;
+    width: 186px;
+    height: 186px;
     border-radius: 50%;
     margin: 0 auto 32px;
     position: relative;
@@ -103,8 +103,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .photo-inner {
-    width: 134px;
-    height: 134px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0F2340 0%, #162D4A 100%);
     display: flex;
@@ -506,22 +506,25 @@
 
   .social-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-top: 20px;
   }
   .social-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
+    gap: 8px;
+    padding: 10px 16px;
     border: 1px solid var(--border);
     color: var(--text-muted);
     text-decoration: none;
     transition: all 0.2s;
+    font-family: var(--font-button);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
   .social-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .social-btn svg { width: 18px; height: 18px; }
+  .social-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
   /* vCard download */
   .vcard-btn {
@@ -547,6 +550,12 @@
   .vcard-btn svg { width: 17px; height: 17px; }
 
   /* ── ANIMATIONS ── */
+  .btn-fade {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeUp 0.65s ease forwards;
+  }
+
   .fade-in {
     opacity: 0;
     transform: translateY(16px);
@@ -558,12 +567,17 @@
   }
 
   .fade-in:nth-child(1) { animation-delay: 0.1s; }
-  .fade-in:nth-child(2) { animation-delay: 0.2s; }
-  .fade-in:nth-child(3) { animation-delay: 0.3s; }
-  .fade-in:nth-child(4) { animation-delay: 0.4s; }
-  .fade-in:nth-child(5) { animation-delay: 0.5s; }
-  .fade-in:nth-child(6) { animation-delay: 0.6s; }
-  .fade-in:nth-child(7) { animation-delay: 0.7s; }
+  .fade-in:nth-child(2) { animation-delay: 0.25s; }
+  .fade-in:nth-child(3) { animation-delay: 0.4s; }
+  .fade-in:nth-child(4) { animation-delay: 0.55s; }
+  /* CTA buttons get progressively longer delays */
+  .cta-stack .cta-btn:nth-child(1) { animation-delay: 0.7s; }
+  .cta-stack .cta-btn:nth-child(2) { animation-delay: 0.88s; }
+  .cta-stack .cta-btn:nth-child(3) { animation-delay: 1.06s; }
+  .cta-stack .cta-btn:nth-child(4) { animation-delay: 1.24s; }
+  .cta-stack .cta-btn:nth-child(5) { animation-delay: 1.42s; }
+  .fade-in:nth-child(6) { animation-delay: 1.6s; }
+  .fade-in:nth-child(7) { animation-delay: 1.75s; }
 
   /* Scrollbar styling */
   .modal::-webkit-scrollbar { width: 4px; }
@@ -573,6 +587,8 @@
   @media (max-width: 600px) {
     .modal-header, .modal-body { padding-left: 20px; padding-right: 20px; }
     .modal-divider { margin-left: 20px; margin-right: 20px; }
+    .photo-frame { width: 150px; height: 150px; }
+    .photo-inner { width: 144px; height: 144px; }
   }
 </style>
 </head>
@@ -594,29 +610,30 @@
     <div class="gold-divider fade-in"></div>
 
     <p class="hero-copy fade-in">
-      Whether you're buying your first home, selling a cherished property, or elevating your career as an agent, I bring clarity, strategy, and a standard of excellence that goes far beyond the transaction. My work is rooted in education, intentionality, and the belief that every client deserves a genuinely exceptional experience — not just a closed deal.
+      I bring clarity, strategy, and a standard of excellence to every real estate decision — whether you're buying, selling, or elevating your career as an agent. Every client deserves a genuinely exceptional experience, not just a closed deal.
     </p>
   </section>
 
   <!-- CTA BUTTONS -->
+  <p class="cta-guide fade-in" style="text-align:center;font-family:var(--font-heading);font-style:italic;color:var(--gold);font-size:clamp(0.95rem,2.5vw,1.1rem);letter-spacing:0.04em;margin-bottom:4px;opacity:0;animation:fadeUp 0.65s ease 0.58s forwards;">Choose the path that fits where you are today.</p>
   <div class="cta-stack">
-    <button class="cta-btn fade-in" onclick="openModal('modal-work')">
+    <button class="cta-btn btn-fade" style="animation-delay:0.7s" onclick="openModal('modal-work')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Work With Me — Real Estate Guidance</span>
     </button>
-    <button class="cta-btn fade-in" onclick="openModal('modal-speak')">
+    <button class="cta-btn btn-fade" style="animation-delay:0.88s" onclick="openModal('modal-speak')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
       <span>Invite Me to Speak or Train</span>
     </button>
-    <button class="cta-btn fade-in" onclick="openModal('modal-academy')">
+    <button class="cta-btn btn-fade" style="animation-delay:1.06s" onclick="openModal('modal-academy')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
       <span>Explore The 15-Star Agent Academy™</span>
     </button>
-    <button class="cta-btn fade-in" onclick="openModal('modal-resources')">
+    <button class="cta-btn btn-fade" style="animation-delay:1.24s" onclick="openModal('modal-resources')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
       <span>Housing Intelligence Resources</span>
     </button>
-    <button class="cta-btn fade-in" onclick="openModal('modal-contact')">
+    <button class="cta-btn btn-fade" style="animation-delay:1.42s" onclick="openModal('modal-contact')">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
       <span>Save My Contact</span>
     </button>
@@ -678,6 +695,7 @@
         </div>
         <div class="exp-card-body">
           <p>Selling a home takes more than a sign in the yard. I help sellers position their property strategically, understand the market with real data, and navigate offers with confidence. My goal is a smooth, informed experience that maximizes your outcome.</p>
+          <blockquote style="border-left:2px solid var(--gold);padding:12px 16px;margin:0 0 16px;background:rgba(212,175,55,0.06);"><p style="font-family:var(--font-heading);font-style:italic;font-size:1rem;color:#fff;line-height:1.7;margin-bottom:6px;">"Brigitte didn't just sell my home — she guided me through every step with patience and expertise."</p><cite style="font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);font-style:normal;font-family:var(--font-button);">— John &amp; Donna</cite></blockquote>
           <a href="https://calendly.com/brigittehillexp/15min" target="_blank" class="modal-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
             Schedule a Seller Consultation
@@ -752,7 +770,7 @@
         </div>
       </div>
 
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScgsJ-kqCEdwG8qCHurzJrOA1yKJ9g1dSraYQ6dRM7gEgG3TQ/viewform?usp=header" class="modal-btn primary">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScgsJ-kqCEdwG8qCHurzJrOA1yKJ9g1dSraYQ6dRM7gEgG3TQ/viewform?usp=header" target="_blank" class="modal-btn primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Submit a Speaking Inquiry
       </a>
@@ -807,7 +825,7 @@
         </div>
       </div>
 
-      <a href="mailto:brigitte@EASERealtyNC.com?subject=15-Star%20Academy%20Interest%20List" class="modal-btn primary">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMHyPsrF6BIrAoTFRlmOJmeG4xLjj6RCcOnDhptnSrxOml3g/viewform?usp=publish-editor" target="_blank" class="modal-btn primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
         Join the Interest List
       </a>
@@ -866,7 +884,7 @@
         </div>
       </div>
 
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScclhY7jreMZum-Rc4R-evi0O4KUC4apdLikL2GXnhtvDIZOw/viewform?usp=header" class="modal-btn primary">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScclhY7jreMZum-Rc4R-evi0O4KUC4apdLikL2GXnhtvDIZOw/viewform?usp=header" target="_blank" class="modal-btn primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Request a Resource Topic
       </a>
@@ -923,11 +941,13 @@
       </div>
 
       <div class="social-row">
-        <a href="https://facebook.com"  target="_blank" class="social-btn" title="Facebook">
+        <a href="https://www.facebook.com/theeasegroup" target="_blank" class="social-btn" title="Facebook">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
         </a>
-        <a href="https://instagram.com"  target="_blank" class="social-btn" title="Instagram">
+        <a href="https://www.instagram.com/theeasegroup/" target="_blank" class="social-btn" title="Instagram">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          Instagram
         </a>
       </div>
     </div>
@@ -986,5 +1006,26 @@ END:VCARD`;
     URL.revokeObjectURL(url);
   }
 </script>
+<!-- DISCLAIMER FOOTER -->
+<footer style="position:relative;z-index:1;border-top:1px solid rgba(212,175,55,0.15);margin-top:8px;padding:28px 24px;text-align:center;">
+  <div style="max-width:680px;margin:0 auto;">
+    <p style="font-family:'Outfit',sans-serif;font-size:0.72rem;line-height:1.8;color:#5A6E82;letter-spacing:0.03em;">
+      Brigitte Hill is a licensed REALTOR® in the state of North Carolina. All real estate services are provided in accordance with applicable federal, state, and local fair housing laws. Information provided on this page is for general informational purposes only and does not constitute legal, financial, or investment advice. Equal Housing Opportunity.
+      <br><br>
+      The 15-Star Agent Academy™ and Experience the Experience™ are proprietary programs. All content, frameworks, and materials are the intellectual property of Brigitte Hill and may not be reproduced without written permission.
+      <br><br>
+      By submitting any form on this site, you agree to be contacted by Brigitte Hill regarding your inquiry. Your information will not be sold or shared with third parties.
+      <br><br>
+      &copy; <span id="yr"></span> Brigitte Hill · EASE Realty NC · Raleigh-Durham, NC · <a href="mailto:brigitte@EASERealtyNC.com" style="color:#5A6E82;text-decoration:none;border-bottom:1px solid rgba(212,175,55,0.3);">brigitte@EASERealtyNC.com</a>
+    </p>
+    <div style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5A6E82" stroke-width="1.5" stroke-linecap="round" style="width:16px;height:16px;flex-shrink:0"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#3D5166;">Equal Housing Opportunity · Licensed REALTOR® · NC</span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
 </body>
 </html>
