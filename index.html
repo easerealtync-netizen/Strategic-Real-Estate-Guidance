@@ -1027,5 +1027,317 @@ END:VCARD`;
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 
+<!-- ═══════════════════════════════════════════ -->
+<!-- VISITOR CAPTURE MODAL                       -->
+<!-- ═══════════════════════════════════════════ -->
+<style>
+  /* Visitor capture modal trigger bar */
+  .visitor-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 90;
+    background: linear-gradient(90deg, #0A1A2F 0%, #0D2040 50%, #0A1A2F 100%);
+    border-top: 1px solid rgba(212,175,55,0.35);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    animation: slideUp 1.2s ease 3s both;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .visitor-bar-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(0.85rem, 2.2vw, 1rem);
+    color: var(--text);
+    flex: 1;
+  }
+  .visitor-bar-text span { color: var(--gold); }
+  .visitor-bar-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    padding: 10px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .visitor-bar-btn:hover { background: #E8C84A; }
+  .visitor-bar-close {
+    background: none; border: none;
+    color: var(--text-muted); cursor: pointer;
+    padding: 4px; flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .visitor-bar-close:hover { color: var(--gold); }
+  .visitor-bar-close svg { width: 16px; height: 16px; display: block; }
+
+  /* Capture form modal */
+  #modal-capture .modal { max-width: 520px; }
+
+  /* Form styles */
+  .vc-intro {
+    font-size: 0.92rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 22px;
+  }
+  .vc-form { display: flex; flex-direction: column; gap: 14px; }
+  .vc-field { display: flex; flex-direction: column; gap: 6px; }
+  .vc-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .vc-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(212,175,55,0.25);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .vc-input:focus { border-color: var(--gold); }
+  .vc-input::placeholder { color: var(--text-muted); font-size: 0.85rem; }
+
+  /* visitor type selector */
+  .vc-types { display: flex; gap: 8px; flex-wrap: wrap; }
+  .vc-type {
+    flex: 1; min-width: 100px;
+    padding: 9px 10px;
+    border: 1px solid rgba(212,175,55,0.25);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .vc-type:hover { border-color: var(--gold); color: var(--gold); }
+  .vc-type.selected { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+  /* submit button */
+  .vc-submit {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .vc-submit:hover { background: #E8C84A; }
+  .vc-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .vc-submit svg { width: 16px; height: 16px; }
+
+  /* success state */
+  .vc-success {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .vc-success-icon {
+    width: 52px; height: 52px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .vc-success-icon svg { width: 22px; height: 22px; stroke: var(--gold); }
+  .vc-success h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 500;
+    color: #fff; margin-bottom: 10px;
+  }
+  .vc-success p {
+    font-size: 0.9rem; line-height: 1.8;
+    color: var(--text); margin-bottom: 20px;
+  }
+  .vc-note {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+  }
+
+  @media(max-width:480px){
+    .visitor-bar { flex-wrap: wrap; }
+    .visitor-bar-text { font-size: 0.8rem; }
+    .vc-types { gap: 6px; }
+    .vc-type { min-width: 80px; font-size: 0.65rem; padding: 8px 6px; }
+  }
+</style>
+
+<!-- STICKY BOTTOM BAR -->
+<div class="visitor-bar" id="visitor-bar">
+  <p class="visitor-bar-text">
+    <span>Stay connected.</span> Get housing insights, market updates &amp; exclusive resources.
+  </p>
+  <button class="visitor-bar-btn" onclick="openModal('modal-capture')">
+    Join My Community
+  </button>
+  <button class="visitor-bar-close" onclick="document.getElementById('visitor-bar').style.display='none'" aria-label="Dismiss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- CAPTURE MODAL -->
+<div class="modal-overlay" id="modal-capture" onclick="handleOverlayClick(event, 'modal-capture')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Stay Connected with Brigitte</h2>
+      <button class="modal-close" onclick="closeModal('modal-capture')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body">
+
+      <!-- FORM VIEW -->
+      <div id="vc-form-view">
+        <p class="vc-intro">Share a little about yourself and I'll send you resources, market insights, and updates tailored to where you are in your real estate journey.</p>
+
+        <div class="vc-form">
+          <div class="vc-field">
+            <label class="vc-label" for="vc-name">First &amp; Last Name <span style="color:#D4AF37">*</span></label>
+            <input class="vc-input" id="vc-name" type="text" placeholder="e.g. Jane Smith" required>
+          </div>
+          <div class="vc-field">
+            <label class="vc-label" for="vc-email">Email Address <span style="color:#D4AF37">*</span></label>
+            <input class="vc-input" id="vc-email" type="email" placeholder="e.g. jane@email.com" required>
+          </div>
+          <div class="vc-field">
+            <label class="vc-label" for="vc-phone">Phone Number <span style="color:#5A6E82">(optional)</span></label>
+            <input class="vc-input" id="vc-phone" type="tel" placeholder="e.g. (919) 555-0100">
+          </div>
+          <div class="vc-field">
+            <label class="vc-label">I am a&hellip; <span style="color:#D4AF37">*</span></label>
+            <div class="vc-types">
+              <button type="button" class="vc-type" onclick="selectType(this)" data-val="Buyer">🏠 Buyer</button>
+              <button type="button" class="vc-type" onclick="selectType(this)" data-val="Seller">🔑 Seller</button>
+              <button type="button" class="vc-type" onclick="selectType(this)" data-val="Agent">🏅 Agent</button>
+              <button type="button" class="vc-type" onclick="selectType(this)" data-val="Just Browsing">👀 Just Browsing</button>
+            </div>
+          </div>
+
+          <button class="vc-submit" id="vc-submit-btn" onclick="submitVisitor()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Submit &amp; Stay Connected
+          </button>
+
+          <p class="vc-note">Your information is kept private and will never be sold or shared with third parties. You may opt out at any time by contacting <a href="mailto:brigitte@EASERealtyNC.com" style="color:var(--gold);">brigitte@EASERealtyNC.com</a>.</p>
+        </div>
+      </div>
+
+      <!-- SUCCESS VIEW -->
+      <div class="vc-success" id="vc-success-view">
+        <div class="vc-success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3>Welcome to the Community!</h3>
+        <p>Thank you for connecting. I'll be in touch with resources and insights tailored just for you.</p>
+        <button class="vc-submit" onclick="closeModal('modal-capture')">
+          Continue Exploring
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── VISITOR TYPE SELECTOR ──
+  let selectedType = '';
+  function selectType(btn) {
+    document.querySelectorAll('.vc-type').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedType = btn.dataset.val;
+  }
+
+  // ── FORM SUBMISSION → GOOGLE SHEET ──
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylY_zvo_9BzdnB--LbJd2HLgtxPjmO6FWWy8LoYiu-Bj8eO2PlrHtVcPWqWUhq7YqaPw/exec';
+
+  async function submitVisitor() {
+    const name  = document.getElementById('vc-name').value.trim();
+    const email = document.getElementById('vc-email').value.trim();
+    const phone = document.getElementById('vc-phone').value.trim();
+
+    // Basic validation
+    if (!name)  { highlight('vc-name',  'Please enter your name.');  return; }
+    if (!email) { highlight('vc-email', 'Please enter your email.'); return; }
+    if (!email.includes('@')) { highlight('vc-email', 'Please enter a valid email.'); return; }
+    if (!selectedType) { alert('Please select what best describes you.'); return; }
+
+    const btn = document.getElementById('vc-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation:spin 1s linear infinite;width:16px;height:16px"><line x1="12" x2="12" y1="2" y2="6"/><line x1="12" x2="12" y1="18" y2="22"/><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"/><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"/><line x1="2" x2="6" y1="12" y2="12"/><line x1="18" x2="22" y1="12" y2="12"/><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"/><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"/></svg> Sending…';
+
+    const payload = {
+      name,
+      email,
+      phone: phone || '—',
+      visitor_type: selectedType,
+      referrer: document.referrer || window.location.href
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      // Show success (no-cors means we assume success)
+      document.getElementById('vc-form-view').style.display = 'none';
+      document.getElementById('vc-success-view').style.display = 'block';
+      document.getElementById('visitor-bar').style.display = 'none';
+    } catch(err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Try Again — Connection Error';
+    }
+  }
+
+  function highlight(id, msg) {
+    const el = document.getElementById(id);
+    el.style.borderColor = '#E05050';
+    el.focus();
+    el.placeholder = msg;
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.placeholder = el.dataset.ph || '';
+    }, 3000);
+  }
+
+  // Store original placeholders
+  document.querySelectorAll('.vc-input').forEach(el => el.dataset.ph = el.placeholder);
+</script>
 </body>
 </html>
