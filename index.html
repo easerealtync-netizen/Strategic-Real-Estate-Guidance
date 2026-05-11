@@ -1346,32 +1346,35 @@ END:VCARD`;
   // Store original placeholders
   document.querySelectorAll('.vc-input').forEach(el => el.dataset.ph = el.placeholder);
 
-  // ── PHONE NUMBER AUTO-FORMATTER ──
+  // ── PHONE NUMBER FORMATTER (formats on blur/leave, not while typing) ──
   const phoneInput = document.getElementById('vc-phone');
-  phoneInput.addEventListener('input', function(e) {
-    // Strip everything except digits
-    let raw = e.target.value.replace(/\D/g, '');
-    // If user typed leading 1 (country code), strip it
-    if (raw.length > 10 && raw[0] === '1') raw = raw.substring(1);
-    // Limit to 10 digits
-    let digits = raw.substring(0, 10);
-    let fmt = '';
-    if (digits.length === 0)      fmt = '';
-    else if (digits.length <= 3)  fmt = '(' + digits;
-    else if (digits.length <= 6)  fmt = '(' + digits.substring(0,3) + ') ' + digits.substring(3);
-    else fmt = '+1 (' + digits.substring(0,3) + ') ' + digits.substring(3,6) + '-' + digits.substring(6);
-    e.target.value = fmt;
+
+  // Only format AFTER user finishes typing (on blur)
+  phoneInput.addEventListener('blur', function(e) {
+    const val = e.target.value.trim();
+    if (!val) return;
+    e.target.value = formatPhoneForSheet(val);
+  });
+
+  // While typing: only allow digits, spaces, dashes, parens, plus
+  phoneInput.addEventListener('keypress', function(e) {
+    const allowed = /[0-9\s\-\(\)\+]/;
+    if (!allowed.test(e.key)) e.preventDefault();
   });
 
   function formatPhoneForSheet(raw) {
-    const digits = raw.replace(/\D/g, '');
+    let digits = raw.replace(/\D/g, '');
+    if (digits.length === 11 && digits[0] === '1') digits = digits.substring(1);
     if (digits.length === 10) {
       return '+1 (' + digits.substring(0,3) + ') ' + digits.substring(3,6) + '-' + digits.substring(6);
-    } else if (digits.length === 11 && digits[0] === '1') {
-      return '+1 (' + digits.substring(1,4) + ') ' + digits.substring(4,7) + '-' + digits.substring(7);
     }
-    return raw || '—';
+    return raw;
   }
+
+    // Store original placeholders
+  document.querySelectorAll('.vc-input').forEach(el => el.dataset.ph = el.placeholder);
+
+
 </script>
 </body>
 </html>
